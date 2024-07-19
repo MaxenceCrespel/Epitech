@@ -1,0 +1,56 @@
+#!/usr/bin/python3
+
+import math
+import sys
+import argparse
+
+def helpFlag():
+    if len(sys.argv) == 2 and sys.argv[1] == "-h":
+        print('USAGE')
+        print('\t./209poll pSize sSize p\n')
+        print('DESCRIPTION')
+        print('\tppSize\tsize of the population')
+        print('\tsSize\tsize of the sample (supposed to be representative)')
+        print('\tp\tpercentage of voting intentions for a specific candidate')
+        exit(0)
+
+def parse_args():
+    try:
+        parser = argparse.ArgumentParser(description='209poll', usage=helpFlag())
+        parser.add_argument("psize", type=int)
+        parser.add_argument("ssize", type=int)
+        parser.add_argument("p", type=float)
+        return parser.parse_args()
+    except:
+        sys.exit(84)
+
+def clamp(x):
+    return min(max(x, 0), 1)
+
+def interval(x, i):
+    return 100 * clamp(x - i), 100 * clamp(x + i)
+
+def main():
+    args = parse_args()
+    psize = args.psize
+    ssize = args.ssize
+    p = args.p / 100
+
+    if psize <= 1 or ssize <= 0 or psize < ssize or p > 1 or p < 0:
+        print("Value Error")
+        return 84
+
+    v = ((p * (1 - p)) / ssize) * ((psize - ssize) / (psize - 1))
+    i95 = interval(p, 1.96 * math.sqrt(v))
+    i99 = interval(p, 2.58 * math.sqrt(v))
+
+    print('Population size:\t %d' % psize)
+    print('Sample size:\t\t %d' % ssize)
+    print('Voting intentions:\t %g%%' % (p * 100))
+    print('Variance:\t\t %f' % v)
+    print('95%% confidence interval: [%.2f%%; %.2f%%]' % i95)
+    print('99%% confidence interval: [%.2f%%; %.2f%%]' % i99)
+    return 0
+
+if __name__ == '__main__':
+    sys.exit(main())

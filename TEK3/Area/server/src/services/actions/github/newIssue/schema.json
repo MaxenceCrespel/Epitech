@@ -1,0 +1,30 @@
+{
+    "name": "github_new_issue",
+    "version": "0.0.1",
+    "summary": "Github New Issue",
+    "description": "Github New Issue",
+    "service": "Github",
+    "author": "Francois et Maxence",
+    "params": {
+        "repo": {
+            "type": "string",
+            "required": true,
+            "description": "Github Repository"
+        },
+        "branch": {
+            "type": "string",
+            "required": true,
+            "description": "Github Branch"
+        },
+        "owner": {
+            "type": "string",
+            "required": true,
+            "description": "Github Owner"
+        },
+        "token": {
+            "type": "string",
+            "required": true,
+            "description": "Github Token"
+        }
+    }
+}

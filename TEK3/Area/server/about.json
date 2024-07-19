@@ -1,0 +1,59 @@
+{
+    "client": {
+        "host": ""
+    },
+    "server": {
+        "current_time": 1698825269,
+        "services": [
+            {
+                "name": "github",
+                "actions": [
+                    {
+                        "name": "github_commits",
+                        "description": "A new commit is detected in the specified repo"
+                    },
+                    {
+                        "name": "github_issues",
+                        "description": "A new issue is detected in the specified repo"
+                    }
+                ]
+            },
+            {
+                "name": "weather",
+                "actions": [
+                    {
+                        "name": "current_weather",
+                        "description": "The weather has changed in the specified city"
+                    }
+                ]
+            },
+            {
+                "name": "Teams",
+                "reactions": [
+                    {
+                        "name": "teams_webhook",
+                        "description": "Send a message on the Teams webhook"
+                    }
+                ]
+            },
+            {
+                "name": "discord",
+                "reactions": [
+                    {
+                        "name": "discord_webhook",
+                        "description": "Send a message on the Discord webhook"
+                    }
+                ]
+            },
+            {
+                "name": "slack",
+                "reactions": [
+                    {
+                        "name": "slack_webhook",
+                        "description": "Send a message on the Slack webhook"
+                    }
+                ]
+            }
+        ]
+    }
+}

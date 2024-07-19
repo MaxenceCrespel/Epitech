@@ -1,0 +1,38 @@
+.settings-container {
+  padding: 10px;
+}
+
+.top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+img {
+  max-width: 150px;
+}
+
+.top-bar .settings-title {
+  text-align: center;
+  font-size: 40px;
+}
+
+.btn-dashboard {
+  margin-left: 10px;
+  padding: 5px 10px;
+  height: 100px;
+  width: 150px;
+  cursor: pointer;
+}
+
+.window-settings .Submit-button {
+  position: relative;
+  left: 20%;
+  background-color: #2CB252;
+  height: 100px;
+  width: 300px;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}

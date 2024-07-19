@@ -1,0 +1,93 @@
+.dashboard-container {
+  padding: 10px;
+}
+
+.top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+img {
+  max-width: 150px;
+}
+
+.top-bar .dashboard-title {
+  text-align: center;
+  font-size: 40px;
+}
+
+.btn-settings,
+.btn-dark-theme {
+  margin-left: 10px;
+  padding: 5px 10px;
+  height: 100px;
+  width: 150px;
+  cursor: pointer;
+}
+
+.btn-action {
+  position: relative;
+  width: 400px;
+  height: 100px;
+  left: 720px;
+  top: 30px;
+  margin: 30px;
+  background: #2CB352;
+  border-radius: 100px;
+  font-size: 30px;
+}
+
+.no-applets {
+  position: relative;
+  width: 255px;
+  height: 48px;
+  left: 800px;
+  top: 150px;
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 40px;
+  line-height: 48px;
+  color: #390038;
+}
+
+.welcome-text {
+  position: relative;
+  text-align: center;
+  top: 20px;
+}
+
+.applets-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+
+.applet-rectangle {
+  text-align: center;
+  width: 300px;
+  height: 200px;
+  border: 3px solid black;
+  border-radius: 50px;
+  margin: 35px;
+  padding: 10px;
+}
+
+.start-button {
+  height: 50px;
+  width: 70px;
+  background-color: green;
+  border: none;
+  border-radius: 50px;
+  margin: 10px;
+}
+
+.stop-button {
+  height: 50px;
+  width: 70px;
+  background-color: red;
+  border: none;
+  border-radius: 50px;
+  margin: 10px;
+}

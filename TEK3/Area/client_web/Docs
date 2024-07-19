@@ -1,0 +1,65 @@
+1. Introduction
+Purpose of the Web Client
+
+Your web client provides a platform for users to create and manage applets, offering seamless integration of actions and reactions. This document will guide you through its features and functionalities.
+Features and Capabilities
+
+    Login using email and password.
+    Login via Google Sign-In.
+    User registration.
+    Create, edit, and manage applets.
+    Modify user information, such as username, name, first name...
+    Switch between dark and light themes.
+
+System Requirements
+
+    A modern web browser with JavaScript enabled.
+    A valid email address for registration.
+
+2. Getting Started
+Accessing the Web Client
+
+To access the web client, open your web browser and navigate to "http://localhost:3000".
+Registration
+
+    Click the "Register" button.
+    Enter your email address and password.
+    Follow the on-screen instructions to complete the registration process.
+
+Login
+
+    Enter your email and password.
+    Click "Login" to access your account.
+
+Using Google Sign-In
+
+    Click "Sign in with Google."
+    Follow the on-screen prompts to authenticate with your Google account.
+
+3. User Profile
+Modifying User Information
+
+    Click on the "settings" button
+    Edit the information as needed (e.g., username, first name).
+    Click "Save" to confirm the changes.
+
+4. Applets
+Creating an Applet
+
+    Click "Create Applet."
+    Configure the action and reaction for your applet.
+    Provide a name and description for the applet.
+    Save the applet.
+
+Starting and Stopping Applets
+
+    In your list of applets, toggle the switch to start or stop an applet as needed.
+
+5. Dark Theme
+Enabling Dark Theme
+
+    Click on the "Dark Theme." button.
+
+Disabling Dark Theme
+
+    Follow the same steps as for enabling dark theme but click on "Light Theme".

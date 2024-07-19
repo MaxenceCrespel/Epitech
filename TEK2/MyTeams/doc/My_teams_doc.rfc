@@ -1,0 +1,93 @@
+Protocol Name: MyTeams
+
+Protocol Description:
+MyTeams is a protocol designed for a messaging application similar to Microsoft Teams.
+The protocol defines a set of commands that can be sent between clients and servers to perform various actions, such as logging in, listing users, sending messages, and retrieving message history.
+
+Command Syntax:
+
+The commands in MyTeams follow a simple syntax.
+Each command starts with a forward slash (/), followed by the command name and any required parameters.
+The parameters are separated by spaces.
+
+Commands:
+
+/login "uuid"
+
+Description:
+This command is used to log in to the server.
+The client sends the /login command followed by a unique user ID (uuid) to the server.
+The server processes the request and sends the /login command followed by the uuid and username of the client who sent the command to all connected clients.
+
+Parameters:
+uuid: a unique user ID
+
+Example:
+Client sends: /login "12345"
+Server responds to all connected clients: /login 12345 JohnDoe
+
+/logout
+
+Description:
+This command is used to log out of the server.
+The client sends the /logout command to the server.
+The server processes the request and sends the /logout command followed by the uuid of the client who sent the command to all connected clients.
+
+Example:
+Client sends: /logout
+Server responds to all connected clients: /logout 12345
+
+/users
+
+Description:
+This command is used to list all users currently connected to the server.
+The client sends the /users command to the server.
+The server processes the request and sends a list of all users with their username, uuid, and status (connected or not) back to the client.
+
+Example:
+Client sends: /users
+Server responds to client: /users User1 12345 1 User2 67890 0
+
+/user "uuid"
+
+Description:
+This command is used to retrieve information about a specific user.
+The client sends the /user command followed by the uuid of the user they wish to retrieve information about.
+The server processes the request and sends the /user command followed by the uuid, username, and status (connected or not) of the user back to the client.
+
+Parameters:
+uuid: a unique user ID
+
+Example:
+Client sends: /user "12345"
+Server responds to client: /user 12345 JohnDoe 1
+
+/send "uuid" "message"
+
+Description:
+This command is used to send a message to a specific user.
+The client sends the /send command followed by the uuid of the recipient and the message they wish to send.
+The server processes the request and sends the /send command followed by the uuid of the sender and the message to the recipient.
+
+Parameters:
+uuid: a unique user ID
+message: the message to be sent
+
+Example:
+Client sends: /send "67890" "Hello, how are you?"
+Server sends to recipient: /send 12345 Hello, how are you?
+
+/messages "uuid"
+
+Description:
+This command is used to retrieve the message history between the client and a specific user.
+The client sends the /messages command followed by the uuid of the user they wish to retrieve message history for.
+The server processes the request and sends all messages exchanged between the two users back to the client.
+
+Parameters:
+uuid: a unique user ID
+
+Example:
+Client sends: /messages "67890"
+Server responds to client:
+/messages ;uuid1;time;Hi, how are you?;uuid2;time;I'm good, thanks. How about you?;uuid1;time;I'm doing well, thanks for asking.

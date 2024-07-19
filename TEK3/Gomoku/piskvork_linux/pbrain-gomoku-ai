@@ -1,0 +1,58 @@
+#!/usr/bin/env python3
+
+
+from sys import stdin
+from src.brain import Brain
+from src.errorHandling import ErrorHandling
+from src.commands_handler import CommandsHandler
+from src.debug import Debug
+from src.utils import pipeOut
+from cProfile import run
+
+
+class Gomoku:
+    def __init__(self):
+        self.debug = Debug()
+        self.brain = Brain(self.debug)
+        self.commands_handler = CommandsHandler(self.brain)
+        self.error = ErrorHandling()
+
+    def handle_commands(self, input):
+        args = input.split(" ")
+        if args[0] == "START":
+            self.error.start(args) and self.commands_handler.start(int(args[1]))
+        elif args[0] == "TURN":
+            try:
+                coords = args[1].split(",")
+                x = int(coords[0])
+                y = int(coords[1])
+                self.error.turn(coords, self.brain.get_board(), self.debug) and self.commands_handler.turn(x, y)
+            except Exception as e:
+                pipeOut("ERROR")
+        elif args[0] == "BEGIN":
+            self.error.begin(args, self.brain.get_board()) and self.commands_handler.begin()
+        elif args[0] == "BOARD":
+            self.commands_handler.board()
+        elif args[0] == "INFO":
+            self.error.info(args) and self.commands_handler.info(args[1], args[2])
+        elif args[0] == "END":
+            self.error.end(args) and self.commands_handler.end()
+        elif args[0] == "ABOUT":
+            self.error.about(args) and self.commands_handler.about()
+        else:
+            pipeOut("ERROR")
+
+    def main(self):
+        while True:
+            argument = stdin.readline().strip()
+            if argument == "":
+                continue
+            self.handle_commands(argument)
+
+
+def main():
+    Gomoku().main()
+
+
+if __name__ == "__main__":
+    run("main()", filename="gomoku.prof")

@@ -1,0 +1,30 @@
+{
+    "name": "github_commit",
+    "version": "0.0.1",
+    "summary": "Github New Commit",
+    "description": "Github New Commit",
+    "service": "Github",
+    "author": "Francois et Maxence",
+    "params": {
+        "repo": {
+            "type": "string",
+            "required": true,
+            "description": "Github Repository"
+        },
+        "branch": {
+            "type": "string",
+            "required": true,
+            "description": "Github Branch"
+        },
+        "owner": {
+            "type": "string",
+            "required": true,
+            "description": "Github Owner"
+        },
+        "token": {
+            "type": "string",
+            "required": true,
+            "description": "Github Token"
+        }
+    }
+}

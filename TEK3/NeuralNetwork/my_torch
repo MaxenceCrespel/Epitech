@@ -1,0 +1,264 @@
+#!/usr/bin/python3
+import sys
+import random
+import json
+import numpy as np
+import re
+
+def print_help():
+    print("USAGE")
+    print("./my_torch [-new IN_LAYER [HIDDEN_LAYERS...] OUT_LAYER | -load LOADFILE]")
+    print("[-train | -predict] [-save SAVEFILE] FILE")
+    print("DESCRIPTION")
+    print("-new Creates a new neural network with random weights.")
+    print("Each subsequent number represents the number of neurons on each layer, from left")
+    print("to right. For example, ./my_torch –new 3 4 5 will create a neural network with")
+    print("an input layer of 3 neurons, a hidden layer of 4 neurons, and an output layer of 5")
+    print("neurons.")
+    print("-load Loads an existing neural network from LOADFILE.")
+    print("-train Launches the neural network in training mode. Each board in FILE")
+    print("must contain inputs to send to the neural network, as well as the expected output.")
+    print("-predict Launches the neural network in prediction mode. Each board in FILE")
+    print("must contain inputs to send to the neural network, and optionally an expected output.")
+    print("-save Save neural network internal state into SAVEFILE.")
+    print("FILE FILE containing chessboards")
+
+def parse_arguments():
+    if len(sys.argv) < 2 or sys.argv[1] == "-help" or sys.argv[1] == "--help":
+        print_help()
+        sys.exit(0)
+    size = len(sys.argv)
+    in_layer = None
+    hidden_layers = []
+    out_layer = None
+    loadfile = None
+    savefile = None
+    neural_network = None
+    filename = sys.argv[size - 1]
+    i = 1
+    while i < size:
+        arg = sys.argv[i]
+        if arg == "-new" or arg == "--new":
+            i += 1
+            in_layer = int(sys.argv[i])
+            i += 1
+            while i < size and sys.argv[i].isdigit():
+                hidden_layers.append(int(sys.argv[i]))
+                i += 1
+            if len(hidden_layers) > 0:
+                out_layer = hidden_layers.pop()
+            i -= 1
+            if in_layer is None or hidden_layers is None or out_layer is None:
+                print("Error: -new flag requires specification of input layer, hidden layers, and output layer.")
+                sys.exit(84)
+            neural_network = create_new_network(in_layer, hidden_layers, out_layer)
+
+        elif arg == "-load" or arg == "--load":
+            loadfile = sys.argv[i + 1]
+            i += 1
+            neural_network = load_neural_network(loadfile)
+            print("Neural network loaded successfully:", neural_network)
+
+        elif arg == "-train" or arg == "--train":
+            if neural_network is None:
+                neural_network = create_new_network(64, [128], 5);
+            if not filename:
+                print("Error: No training file specified.")
+                sys.exit(84)
+            training_data = read_training_data(filename)
+            neural_network = train_neural_network(neural_network, training_data)
+
+        elif arg == "-save" or arg == "--save":
+            i += 1
+            if i < len(sys.argv):
+                savefile = sys.argv[i]
+            i += 1
+            if neural_network is None:
+                print("Error: -save flag requires a valid neural network.")
+                sys.exit(84)
+            if savefile is None:
+                print("Error: -save flag requires a valid filename.")
+                sys.exit(84)
+            save_network(neural_network, savefile)
+            print(f"Neural network saved to {savefile}")
+            sys.exit(0)
+
+        elif arg == "-predict" or arg == "--predict":
+            if neural_network is None:
+                print("Error: No neural network is loaded for prediction.")
+                sys.exit(84)
+            if not filename:
+                print("Error: No file specified for prediction.")
+                sys.exit(84)
+            prediction_data, prediction_labels = read_prediction_data(filename)
+            predictions = predict(neural_network, prediction_data)
+            evaluate_predictions(predictions, prediction_labels)
+        i += 1
+
+def predict(neural_network, inputs):
+    activations = inputs
+    for layer in neural_network["layers"]:
+        net_inputs = np.dot(activations, layer["weights"]) + layer["bias"]
+        activations = relu(net_inputs)
+    predictions = softmax(activations)
+    return predictions
+
+def read_prediction_data(file_path):
+    with open(file_path, 'r') as file:
+        content = file.read()
+    prediction_data = []
+    prediction_labels = []
+    matches = re.finditer(r'RES: (.+?)\nCHECKMATE: (.+?)\nFEN: (.+?)\n([\s\S]+?)(?=\nRES:|$)', content)
+    for match in matches:
+        result = match.group(1)
+        if result not in ['1-0', '0-1', '1/2-1/2']:
+            result = '*'
+        chessboard = match.group(4).strip().split('\n')
+        input_data = preprocess_chessboard(chessboard)
+        output_label = test[result]
+        prediction_data.append(input_data)
+        prediction_labels.append(output_label)
+    return prediction_data, prediction_labels
+
+def evaluate_predictions(predictions, labels):
+    correct_predictions = 0
+    for pred, label in zip(predictions, labels):
+        if np.argmax(pred) == np.argmax(label):
+            correct_predictions += 1
+    total_predictions = len(predictions)
+    success_rate = (correct_predictions / total_predictions) * 100 if total_predictions > 0 else 0
+    print(f"Nombre de prédictions correctes: {correct_predictions} sur {total_predictions}")
+    print(f"Pourcentage de réussite: {success_rate:.2f}%")
+
+def get_all_weights(neural_network):
+    layers = neural_network["layers"]
+    all_weights = []
+    for layer in layers:
+        weights = layer["weights"]
+        all_weights.append(weights)
+    return all_weights
+
+def forward_propagation(neural_network, inputs):
+    activations = inputs
+    for layer in neural_network["layers"]:
+        net_inputs = np.dot(activations, layer["weights"]) + layer["bias"]
+        activations = relu(net_inputs)
+    return softmax(activations)
+
+def softmax(x):
+    if x.ndim == 1:
+        x = x.reshape((1, -1))
+    shift_x = x - np.max(x, axis=1, keepdims=True)
+    exp_shift_x = np.exp(shift_x)
+    softmax = exp_shift_x / np.sum(exp_shift_x, axis=1, keepdims=True)
+    return np.clip(softmax, 1e-7, 1 - 1e-7)
+
+def relu(x):
+    return np.maximum(0, x)
+
+def calculate_loss(predictions, targets):
+    loss = -np.sum(targets * np.log(predictions + 1e-7)) / len(targets)
+    return loss
+
+def relu_derivative(x):
+    return np.where(x > 0, 1, 0)
+
+def backward_propagation(neural_network, inputs, targets, learning_rate):
+    gradients_weights = [np.zeros_like(layer["weights"]) for layer in neural_network["layers"]]
+    gradients_biases = [np.zeros_like(layer["bias"]) for layer in neural_network["layers"]]
+    activations = [inputs]
+    for layer in neural_network["layers"]:
+        net_inputs = np.dot(activations[-1], layer["weights"]) + layer["bias"]
+        activations.append(relu(net_inputs))
+    error = activations[-1] - targets
+    for i in range(len(neural_network["layers"]) - 1, -1, -1):
+        gradients_weights[i] = np.outer(activations[i], error)
+        gradients_biases[i] = error
+        if i > 0:
+            error = np.dot(error, neural_network["layers"][i]["weights"].T) * relu_derivative(activations[i])
+    for i in range(len(neural_network["layers"])):
+        neural_network["layers"][i]["weights"] -= learning_rate * gradients_weights[i]
+        neural_network["layers"][i]["bias"] -= learning_rate * gradients_biases[i]
+
+def train_neural_network(neural_network, training_data, learning_rate=0.01, epochs=10):
+    for epoch in range(epochs):
+        total_loss = 0.0
+        for example in training_data:
+            inputs = example["input"]
+            expected_output = example["output"]
+            output = forward_propagation(neural_network, inputs)
+            loss = calculate_loss(output, expected_output)
+            backward_propagation(neural_network, inputs, expected_output, learning_rate)
+            total_loss += loss
+        average_loss = total_loss / len(training_data)
+        print(f"Epoch {epoch + 1}/{epochs}, Average Loss: {average_loss}")
+    return neural_network
+
+def read_training_data(file_path):
+    with open(file_path, 'r') as file:
+        content = file.read()
+    training_data = []
+    matches = re.finditer(r'RES: (.+?)\nCHECKMATE: (.+?)\nFEN: (.+?)\n([\s\S]+?)(?=\nRES:|$)', content)
+    for match in matches:
+        result = match.group(1)
+        if result not in ['1-0', '0-1', '1/2-1/2']:
+            result = '*'
+        checkmate = match.group(2)
+        fen = match.group(3)
+        chessboard = match.group(4).strip().split('\n')
+        input_data = preprocess_chessboard(chessboard)
+        if checkmate == "False":
+            output_data = test[result]
+        else:
+            output_data = test['Checkmate']
+        training_data.append({"input": input_data, "output": output_data})
+    return training_data
+
+test = {'1-0': [1, 0, 0, 0, 0], '0-1': [0, 1, 0, 0, 0], '1/2-1/2': [0, 0, 1, 0, 0], 'Checkmate': [0, 0, 0, 1, 0], '*': [0, 0, 0, 0, 1]}
+
+def preprocess_chessboard(chessboard):
+    flat_chessboard = [piece for row in chessboard for piece in row.split()]
+    piece_mapping = {'.': 0, 'p': -1, 'r': -2, 'n': -3, 'b': -4, 'q': -5, 'k': -6, 'P': 1, 'R': 2, 'N': 3, 'B': 4, 'Q': 5, 'K': 6}
+    numerical_chessboard = [piece_mapping[piece] for piece in flat_chessboard]
+    return np.array(numerical_chessboard)
+
+def create_layer(input_size, output_size):
+    limit = np.sqrt(6 / (input_size + output_size))
+    weights = np.random.uniform(-limit, limit, (input_size, output_size))
+    bias = np.zeros(output_size)
+    return {"weights": weights, "bias": bias}
+
+def create_new_network(input_size, hidden_layers, output_size):
+    layers = [create_layer(input_size, hidden_layers[0])]
+    for i in range(1, len(hidden_layers)):
+        layers.append(create_layer(hidden_layers[i-1], hidden_layers[i]))
+    layers.append(create_layer(hidden_layers[-1], output_size))
+    return {"layers": layers}
+
+def load_neural_network(file_path):
+    try:
+        with open(file_path, 'r') as file:
+            content = file.read()
+        network_data = json.loads(content)
+        for layer in network_data["layers"]:
+            layer["weights"] = np.array(layer["weights"])
+            layer["bias"] = np.array(layer["bias"])        
+        return network_data
+    except Exception as e:
+        print(f"Erreur de chargement du réseau neuronal depuis {file_path}: {e}")
+        sys.exit(84)
+
+def save_network(neural_network, savefile):
+    network_to_save = {
+        "layers": [
+            {
+                "weights": layer["weights"].tolist() if isinstance(layer["weights"], np.ndarray) else layer["weights"],
+                "bias": layer["bias"].tolist() if isinstance(layer["bias"], np.ndarray) else layer["bias"]
+            } for layer in neural_network["layers"]
+        ]
+    }
+    with open(savefile, 'w') as file:
+        json.dump(network_to_save, file)
+
+if __name__ == "__main__":
+    parse_arguments()

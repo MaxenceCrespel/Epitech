@@ -1,0 +1,15 @@
+{
+    "name": "current_weather",
+    "version": "0.0.1",
+    "summary": "Get current weather",
+    "description": "Get current weather",
+    "service": "Weather",
+    "author": "Francois et Maxence",
+    "params": {
+        "city": {
+            "type": "string",
+            "required": false,
+            "default": "Paris"
+        }
+    }
+}

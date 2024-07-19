@@ -1,0 +1,13 @@
+.Applet-container {
+    padding: 10px;
+}
+
+.window button {
+    background-color: #2CB252;
+    height: 100px;
+    width: 300px;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+  }

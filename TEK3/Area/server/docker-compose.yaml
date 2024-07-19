@@ -1,0 +1,28 @@
+version: '3'
+services:
+  node_app:
+    image: 'node:alpine'
+    environment:
+      MONGO_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
+    working_dir: /var/www/app
+    volumes:
+      - './:/var/www/app'
+    command: [
+      "sh",
+      "-c",
+      "npm install && MONGO_ROOT_PASSWORD=${MONGO_ROOT_PASSWORD} npm run build && npm run start"
+    ]
+    depends_on:
+      - mongo_db
+  mongo_db:
+    image: 'mongo:latest'
+    volumes:
+      - 'mongo_data:/data/db'
+    ports:
+      - '27017:27017'
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: "root"
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
+volumes:
+  app_data:
+  mongo_data:

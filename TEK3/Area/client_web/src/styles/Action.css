@@ -1,0 +1,46 @@
+.action-container {
+  padding: 10px;
+}
+
+.top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+img {
+  max-width: 150px;
+}
+
+.top-bar .action-title {
+  text-align: center;
+  font-size: 40px;
+}
+
+.available-actions-container {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.available-action {
+  margin-right: 100px;
+  margin-left: 250px;
+  font-size: 30px;
+  cursor: pointer;
+}
+
+.available-action.selected {
+  color: green;
+}
+
+.selected-action .action-button {
+  position: relative;
+  left: 20%;
+  background-color: #2CB252;
+  height: 100px;
+  width: 300px;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}

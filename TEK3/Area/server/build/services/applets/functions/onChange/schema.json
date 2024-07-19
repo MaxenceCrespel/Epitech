@@ -1,0 +1,23 @@
+{
+    "name": "on_change_on_action",
+    "version": "0.0.1",
+    "summary": "On Change on action",
+    "description": "On Change on action, do something",
+    "author": "Francois et Maxence",
+    "params": [
+        {
+            "name": "last_data",
+            "type": "json"
+        },
+        {
+            "name": "current_data",
+            "type": "json"
+        }
+    ],
+    "return": {
+        "data": {
+            "type": "json"
+        },
+        "isChanged": true
+    }
+}

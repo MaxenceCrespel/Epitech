@@ -1,0 +1,16 @@
+{
+    "name": "discord_webhook",
+    "version": "1.0.0",
+    "summary": "Discord Webhook",
+    "description": "Discord Webhook",
+    "service": "Discord",
+    "author": "Francois et Maxence",
+    "params": [
+        {
+            "name": "url",
+            "label": "URL",
+            "type": "text",
+            "required": true
+        }
+    ]
+}

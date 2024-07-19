@@ -1,0 +1,14 @@
+{
+    "name": "teams_webhook",
+    "version": "1.0.0",
+    "summary": "Teams Webhook",
+    "description": "Teams Webhook",
+    "service": "Microsoft Teams",
+    "author": "Francois et Maxence",
+    "params": [
+        {
+            "paramName": "url",
+            "required": true
+        }
+    ]
+}

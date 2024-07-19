@@ -1,0 +1,16 @@
+{
+    "name": "slack_webhook",
+    "version": "1.0.0",
+    "summary": "Slack Webhook",
+    "description": "Envoie un message sur Slack",
+    "service": "Slack",
+    "author": "Francois et Maxence",
+    "params": [
+        {
+            "name": "url",
+            "label": "URL du webhook Slack",
+            "type": "text",
+            "required": true
+        }
+    ]
+}
